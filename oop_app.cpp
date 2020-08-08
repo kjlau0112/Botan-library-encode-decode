@@ -16,9 +16,10 @@ void crypto::encrypt(const std::string & plaintext)
 {
     enc->set_key(key);
     //generate fresh nonce (IV)
-    Botan::secure_vector<uint8_t> iv = rng.random_vec(enc->default_nonce_length());
+    iv = rng.random_vec(enc->default_nonce_length());
     // Copy input data to a buffer that will be encrypted
-    Botan::secure_vector<uint8_t> pt(plaintext.data(), plaintext.data()+plaintext.length());
+    Botan::secure_vector<uint8_t> text2Encrypt(plaintext.data(), plaintext.data()+plaintext.length());
+    this->pt = text2Encrypt;
     enc->start(iv);
     enc->finish(pt);
     std::cout << "enc->name() "<< enc->name()<<std::endl;
@@ -28,7 +29,7 @@ void crypto::encrypt(const std::string & plaintext)
 
 void crypto::decrypt()
 {
-    dec->set_key(decryptkey);
+    dec->set_key(key);
     dec->start(iv);
     dec->finish(pt);
     std::cout <<pt.data()<<std::endl;
@@ -43,7 +44,7 @@ crypto::~crypto()
 
 int main()
 {
-    const std::string plaintext("Pa$$5523224lkj");
+    const std::string plaintext("LMAOplsPP5523224");
     crypto obj;
     obj.encrypt(plaintext);
     obj.decrypt();
